@@ -15,58 +15,86 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_KEY;
 const supabase = supabaseClient.createClient(supabaseUrl, supabaseKey);
 
+const API_KEY = process.env.API_KEY;
+
 app.get('/', (req, res) => {
-  res.sendFile('public/Customers.html', { root: __dirname });
+  res.sendFile('public/main.html', { root: __dirname });
 });
 
-app.get('/customers', async (req, res) => {
-  console.log('Attempting to get all customers!');
-
-  const { data, error } = await supabase.from('customer').select();
-
-  if (error) {
-    console.log(`Error: ${error}`);
-    res.statusCode = 500;
-    res.send(error);
-  } else {
-    console.log('Recieved Data:', data.length);
-    res.json(data);
-  }
+app.get('/about', (req, res) => {
+  res.sendFile('public/about.html', { root: __dirname });
 });
 
-app.post('/customer', async (req, res) => {
-  console.log('Adding Customer');
-  console.log(`Request: ${JSON.stringify(req.body)}`);
+app.get('/compare', (req, res) => {
+  res.sendFile('public/compare.html', { root: __dirname });
+});
 
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const state = req.body.state;
+app.get('/contact', async (req, res) =>  {
+    const output = {
+        phrase: 'Hello World',
+    };
 
-  if (!isValidStateAbbreviation(state)) {
-    console.log(`State: ${state} is invalid`);
-    res.statusCode = 400;
-    res.json({
-      message: `${state} is not a valid 2 Letter Abbreviation for State`,
-    });
-    return;
-  }
+    res.json(output);
+});
 
-  const { data, error } = await supabase
-    .from('customer')
-    .insert({
-      customer_first_name: firstName,
-      customer_last_name: lastName,
-      customer_state: state,
-    })
-    .select();
+const RAPIDAPI_HEADERS = {
+    'x-rapidapi-key': API_KEY,
+    'x-rapidapi-host': 'basketball-head.p.rapidapi.com',
+    'Content-Type': 'application/json'
+};
 
-  if (error) {
-    console.log(`Error: ${error}`);
-    res.statusCode = 500;
-    res.send(error);
-  } else {
+app.get('/api/db-check', async (req, res) => {
+    const { firstname, lastname } = req.query;
+    const { data, error } = await supabase
+        .from('players')
+        .select('*')
+        .ilike('player_first_name', firstname)
+        .ilike('player_last_name', lastname)
+        .maybeSingle();
+
+    if (error) return res.status(500).json({ error: error.message });
+    res.json(data); 
+});
+
+app.get('/api/external-fetch', async (req, res) => {
+    const { firstname, lastname } = req.query;
+    try {
+        const searchRes = await fetch('https://basketball-head.p.rapidapi.com/players/search', {
+            method: 'POST',
+            headers: RAPIDAPI_HEADERS,
+            body: JSON.stringify({ firstname, lastname, pageSize: 1 })
+        });
+        const searchData = await searchRes.json();
+        const player = searchData.body[0]
+
+        if (!player) return res.status(404).json({ error: "Player not found" });
+
+        const statsRes = await fetch(`https://basketball-head.p.rapidapi.com/players/${player.playerId}/stats/PerGame?seasonType=Regular&seasonId=Career`, { 
+            method: 'GET', headers: RAPIDAPI_HEADERS 
+        });
+        const statsData = await statsRes.json();
+        const career = statsData.body;
+        console.log(career);
+
+        res.json({
+            player_id: player.playerId,
+            player_first_name: player.firstName,
+            player_last_name: player.lastName,
+            points_per_game: parseFloat(career.pointsPerGame) || 0,
+            rebounds_per_game: parseFloat(career.totalReboundsPerGame) || 0,
+            assists_per_game: parseFloat(career.assistsPerGame) || 0
+        });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.post('/api/db-push', async (req, res) => {
+    const { data, error } = await supabase
+        .from('players')
+        .upsert(req.body, { onConflict: 'player_id' })
+        .select().single();
+
+    if (error) return res.status(500).json({ error: error.message });
     res.json(data);
-  }
 });
 
 app.listen(port, () => {
