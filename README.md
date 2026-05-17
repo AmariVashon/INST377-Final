@@ -15,3 +15,4 @@ iOS
 Android
 
 # Developer Manual
+(docs/developer-manual.md)
