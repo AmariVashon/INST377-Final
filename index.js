@@ -29,14 +29,6 @@ app.get('/compare', (req, res) => {
   res.sendFile('public/compare.html', { root: __dirname });
 });
 
-app.get('/contact', async (req, res) =>  {
-    const output = {
-        phrase: 'Hello World',
-    };
-
-    res.json(output);
-});
-
 const RAPIDAPI_HEADERS = {
     'x-rapidapi-key': API_KEY,
     'x-rapidapi-host': 'basketball-head.p.rapidapi.com',
@@ -52,39 +44,54 @@ app.get('/api/db-check', async (req, res) => {
         .ilike('player_last_name', lastname)
         .maybeSingle();
 
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+      console.log(`Error: ${error}`)
+      res.statusCode = 500;
+      res.send(error);
+    }
     res.json(data); 
 });
 
-app.get('/api/external-fetch', async (req, res) => {
+app.get('/api/fetch-player', async (req, res) => {
     const { firstname, lastname } = req.query;
-    try {
-        const searchRes = await fetch('https://basketball-head.p.rapidapi.com/players/search', {
-            method: 'POST',
-            headers: RAPIDAPI_HEADERS,
-            body: JSON.stringify({ firstname, lastname, pageSize: 1 })
-        });
-        const searchData = await searchRes.json();
-        const player = searchData.body[0]
+    const searchRes = await fetch('https://basketball-head.p.rapidapi.com/players/search', {
+        method: 'POST',
+        headers: RAPIDAPI_HEADERS,
+        body: JSON.stringify({ firstname, lastname, pageSize: 1 })
+    });
+    const searchData = await searchRes.json();
+    const player = searchData.body[0]
 
-        if (!player) return res.status(404).json({ error: "Player not found" });
+    if (!player) {
+      console.log(`Error: ${error}`)
+      res.statusCode = 404;
+      res.send(error);
+    }
 
-        const statsRes = await fetch(`https://basketball-head.p.rapidapi.com/players/${player.playerId}/stats/PerGame?seasonType=Regular&seasonId=Career`, { 
-            method: 'GET', headers: RAPIDAPI_HEADERS 
-        });
-        const statsData = await statsRes.json();
-        const career = statsData.body;
-        console.log(career);
+    const statsRes = await fetch(`https://basketball-head.p.rapidapi.com/players/${player.playerId}/stats/PerGame?seasonType=Regular&seasonId=Career`, { 
+        method: 'GET', headers: RAPIDAPI_HEADERS 
+    });
+    
+    const statsData = await statsRes.json();
+    const career = statsData.body[0];
+    console.log(career);
 
-        res.json({
-            player_id: player.playerId,
-            player_first_name: player.firstName,
-            player_last_name: player.lastName,
-            points_per_game: parseFloat(career.pointsPerGame) || 0,
-            rebounds_per_game: parseFloat(career.totalReboundsPerGame) || 0,
-            assists_per_game: parseFloat(career.assistsPerGame) || 0
-        });
-    } catch (err) { res.status(500).json({ error: err.message }); }
+    res.json({
+        player_id: player.playerId,
+        player_first_name: player.firstName,
+        player_last_name: player.lastName,
+        minutes_per_game: parseFloat(career.minutesPerGame) || 0,
+        points_per_game: parseFloat(career.pointsPerGame) || 0,
+        rebounds_per_game: parseFloat(career.totalReboundsPerGame) || 0,
+        assists_per_game: parseFloat(career.assistsPerGame) || 0,
+        steals_per_game: parseFloat(career.stealsPerGame) || 0,
+        blocks_per_game: parseFloat(career.blocksPerGame) || 0,
+        fgp_per_game: parseFloat(career.fieldGoalPercentage) || 0,
+        three_percentage_per_game: parseFloat(career.threePointFieldGoalPercentage) || 0,
+        ftp_per_game: parseFloat(career.freeThrowPercentage) || 0,
+        turnovers_per_game: parseFloat(career.turnoversPerGame) || 0,
+        player_photo: player.headshotUrl || "https://media.istockphoto.com/id/2203374109/vector/anonymous-black-silhouette-of-a-person-on-white-background-image.jpg?s=612x612&w=0&k=20&c=8C1kyqJ-uEEqs0vNIQ1fZ2XgjRwxYVbzx_N_S9tHLLs="
+    });
 });
 
 app.post('/api/db-push', async (req, res) => {
@@ -93,7 +100,12 @@ app.post('/api/db-push', async (req, res) => {
         .upsert(req.body, { onConflict: 'player_id' })
         .select().single();
 
-    if (error) return res.status(500).json({ error: error.message });
+    if (error) {
+      console.log(`Error: ${error}`)
+      res.statusCode = 500;
+      res.send(error);
+    }
+    
     res.json(data);
 });
 

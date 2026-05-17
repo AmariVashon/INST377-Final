@@ -2,6 +2,7 @@
     <head>
         <title>INST377 Final Project</title>
         <link rel="stylesheet" href = "main.css">
+        <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
         <script src="main.js" defer></script>
     </head>
     <body>
@@ -10,29 +11,20 @@
             <ul>
                 <li> <a href="main.html">Home</a></li>
                 <li> <a href="about.html">About</a></li>
-                <li> <a href="compare.html">Visual Comparison</a></li>
+                <li> <a href="compare.html">Player Comparison</a></li>
             </ul>
         </nav>
-    <div class="main-container">
-        <div class="comparison-form">
-            <div>
-            <h2>Compare NBA Players</h2>
+        <div class="main-container">
+            <div class="content-area">
+                <div class="welcome-box">
+                    <h1>Welcome!</h1>
+                    <p>Get started with the player comparison tool below.</p>
+                </div>
+                <div class="content-box">
+                    <button class="pages-button" role="button" onclick="document.location='about.html'">About</button>
+                    <button class="pages-button" role="button" onclick="document.location='compare.html'">Player Comparison</button>
+                </div>
             </div>
-            <div>
-                <input type="text" id="fn1" placeholder="Stephen">
-                <input type="text" id="ln1" placeholder="Curry">
-            </div>
-            <br>
-            <div>
-                <input type="text" id="fn2" placeholder="LeBron">
-                <input type="text" id="ln2" placeholder="James">
-            </div>
-        
-            <br>
-            <button onclick="comparePlayers()">Compare Stats</button>
         </div>
-        
-
-        <div id="table-container"></div>
     </body>
 </html>

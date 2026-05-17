@@ -1,0 +1,118 @@
+<html>
+    <head>
+        <title>INST377 Final Project</title>
+        <link rel="stylesheet" href = "main.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
+        <script src="compare.js" defer></script>
+    </head>
+    <body>
+
+        <nav class="main-nav"> 
+            <ul>
+                <li> <a href="main.html">Home</a></li>
+                <li> <a href="about.html">About</a></li>
+                <li> <a href="compare.html">Player Comparison</a></li>
+            </ul>
+        </nav>
+    <div class="main-container">
+        <div class="comparison-form">
+            <div>
+            <h2>Compare NBA Players</h2>
+            </div>
+            <div>
+                <input type="text" id="fn1" value="Stephen">
+                <input type="text" id="ln1" value="Curry">
+            </div>
+            <br>
+            <div>
+                <input type="text" id="fn2" value="LeBron">
+                <input type="text" id="ln2" value="James">
+            </div>
+        
+            <br>
+            <button class="compare-button" onclick="comparePlayers()">Compare Stats</button>
+        </div>
+        
+
+        <div id="main-display" class="display-container">
+            <div id="table-box" class="chart-box animate-pop">
+                <table>
+                    <thead>
+                        <tr style="background-color: #eee;">
+                            <th>Stats</th>
+                            <th id="p1-name"></th>
+                            <th id="p2-name"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td><img id="p1-photo" src=""></td>
+                            <td><img id="p2-photo" src=""></td>
+                        </tr>
+                        <tr>
+                            <td>Minutes Per Game</td>
+                            <td id="p1-mpg"></td>
+                            <td id="p2-mpg"></td>
+                        </tr>
+                        <tr>
+                            <td>Points Per Game</td>
+                            <td id="p1-ppg"></td>
+                            <td id="p2-ppg"></td>
+                        </tr>
+                        <tr>
+                            <td>Assists Per Game</td>
+                            <td id="p1-apg"></td>
+                            <td id="p2-apg"></td>
+                        </tr>
+                        <tr>
+                            <td>Rebounds Per Game</td>
+                            <td id="p1-rpg"></td>
+                            <td id="p2-rpg"></td>
+                        </tr>
+                        <tr>
+                            <td>Steals Per Game</td>
+                            <td id="p1-spg"></td>
+                            <td id="p2-spg"></td>
+                        </tr>
+                        <tr>
+                            <td>Blocks Per Game</td>
+                            <td id="p1-bpg"></td>
+                            <td id="p2-bpg"></td>
+                        </tr>
+                        <tr>
+                            <td>Turnovers Per Game</td>
+                            <td id="p1-tpg"></td>
+                            <td id="p2-tpg"></td>
+                        </tr>
+                        <tr>
+                            <td>Field Goal Percentage</td>
+                            <td id="p1-fpg"></td>
+                            <td id="p2-fpg"></td>
+                        </tr>
+                        <tr>
+                            <td>Three Point Percentage</td>
+                            <td id="p1-thpg"></td>
+                            <td id="p2-thpg"></td>
+                        </tr>
+                        <tr>
+                            <td>Free Throw Percentage</td>
+                            <td id="p1-ftpg"></td>
+                            <td id="p2-ftpg"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        
+            <div class="chart-box animate-pop">
+                <canvas id="barChart"></canvas>
+            </div>
+
+            <div class="chart-box animate-pop">
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+    </div>
+    </body>
+</html>
