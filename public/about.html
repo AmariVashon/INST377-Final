@@ -1,8 +1,9 @@
 <html>
     <head>
         <title>INST377 Final Project</title>
-        <link rel="stylesheet" href = "about.css">
-        <script src="main.js" defer></script>
+        <link rel="stylesheet" href = "main.css">
+        <script src="https://cdn.jsdelivr.net/npm/animejs/dist/bundles/anime.umd.min.js"></script>
+        <script src="about.js" defer></script>
     </head>
     <body>
 
@@ -13,8 +14,46 @@
                 <li> <a href="compare.html">Player Comparison</a></li>
             </ul>
         </nav>
-        <div class="main-container">
-            <div class="content-area">
+        <div class="about-container">
+            <div class="about-description">
+                <h2>How It Works</h2>
+                <p>This site utilizes RapidAPI's NBA player data and a Supabase database to fetch and store NBA player career averages. ChartJS allows for visual comparisons of the players.</p>
+            </div>
+
+            <div class="pipeline-container">
+                <div class="step-card">
+                    <div class="step-num">01</div>
+                    <h3>Check SupaBase Database</h3>
+                    <p>Instantly queries the internal database prior to sending a request to RapidAPI</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">02</div>
+                    <h3>Fetch Player</h3>
+                    <p>If the player is not in the database, a request is sent to RapidAPI for the NBA player's data</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">03</div>
+                    <h3>Push to Database</h3>
+                    <p>The data is pushed into the database, where we pull the data from and display on the screen</p>
+                </div>
+            </div>
+
+            <div class="front-end-section">
+                <h2 style="padding: 0; margin: 0;">The Front-End</h2>
+                <div class="front-end-grid">
+                    <div class="front-end-item">
+                        <strong>Chart.js</strong>
+                        <p class="front-end">Renders Bar Comparisons and Spider Graphs</p>
+                    </div>
+                    <div class="front-end-item">
+                        <strong>Anime.js</strong>
+                        <p class="front-end">Manages layout structural transitions</p>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="pages-button" role="button" onclick="document.location='compare.html'">Compare Players</button>
             </div>
         </div>
     </body>
