@@ -7,12 +7,12 @@ INST377 Final Project
 This tool will allow you to compare any two NBA players. Comparisons include basic stats such as per game averages as well as a visual representation of their career averages
 
 # Target Browsers
-Google Chrome
+Google Chrome\
 Safari
 
 ## OS
-iOS
+iOS\
 Android
 
 # Developer Manual
-[Developer Manual] (docs/developer-manual.md)
+[Developer Manual] (/docs/developer-manual.md)
